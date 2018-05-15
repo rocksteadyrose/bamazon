@@ -1,7 +1,8 @@
-var mysql = require("mysql");
-var inquirer = require("inquirer");
+var mysql = require('mysql');
+var inquirer = require('inquirer');
 var Table = require('cli-table');
-var chosenItem;
+var chalk = require('chalk');
+var figlet = require('figlet');
 
 var connection = mysql.createConnection({
     host: "localhost",
@@ -15,10 +16,19 @@ var connection = mysql.createConnection({
 
 connection.connect(function (err) {
     if (err) throw err;
-    console.log("connected as id " + connection.threadId);
+    // console.log("connected as id " + connection.threadId);
     showList();
 });
 
+
+figlet('BAMAZON!', function(err, data) {
+    if (err) {
+        console.log('Something went wrong...');
+        console.dir(err);
+        return;
+    }
+    console.log(data)
+});
 
 
 function showList() {
@@ -58,16 +68,23 @@ function updateItems() {
                 }
             ])
             .then(function (answer) {
+                var chosenItem;
                 connection.query("SELECT * FROM products WHERE item_id=?", answer.choice, function (err, response) {
                     for (var i = 0; i < response.length; i++) {
-                        if (response[i].item_id == answer.choice) {
+                        if (Number(response[i].item_id) === Number(answer.choice)) {
                             chosenItem = response[i];
                         }
                     }
 
-                    if (answer.stock < chosenItem.stock_quantity) {
+                    if (answer.choice > 10) {
+                        console.log(chalk.red("Item doesn't exist! Please pick another!"))
+                        showList();
+                    }
+
+                    else if (answer.stock < chosenItem.stock_quantity) {
                         var stockUpdate = chosenItem.stock_quantity - answer.stock;
                         var totalCost = answer.stock * chosenItem.price;
+                        var itemName = chosenItem.product_name;
                         var query = connection.query(
                             "UPDATE products SET ? WHERE ?",
                             [
@@ -80,14 +97,14 @@ function updateItems() {
                             ],
                             function (error) {
                                 if (error) throw err;
-                                console.log("Purchased successfully! Your order total is " + "$" + totalCost);
+                                console.log(chalk.green("Purchased successfully! Your order total for " + itemName + " is " + "$" + totalCost));
                                 successfulPurchase();
                             }
                         );
 
                     }
                     else {
-                        console.log("Insufficient quantity!");
+                        console.log(chalk.red("Insufficient quantity!"));
                         unsuccessfulPurchase();
                     }
                 }
@@ -109,13 +126,13 @@ function successfulPurchase() {
     ])
         .then(function (answer) {
             switch (answer.confirm) {
-            case true:
-                showList();
-                break;
-            case false:
-                console.log("See you later!")
-                process.exit();
-                break;
+                case true:
+                    showList();
+                    break;
+                case false:
+                    console.log(chalk.blue("See you later!"))
+                    process.exit();
+                    break;
             }
         })
 }
@@ -129,20 +146,20 @@ function unsuccessfulPurchase() {
             choices: [
                 "Purchase a different item or less of this item",
                 "Come back later"
-              ]
+            ]
         }
     ])
         .then(function (answer) {
             switch (answer.list) {
                 case "Purchase a different item or less of this item":
-                showList();
-                  break;
-          
+                    showList();
+                    break;
+
                 case "Come back later":
-                    console.log("See you later!")
+                    console.log(chalk.blue("See you later!"))
                     process.exit();
-                  break;
-                }
+                    break;
+            }
         })
 
 }

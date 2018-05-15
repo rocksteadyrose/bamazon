@@ -20,7 +20,10 @@
   },
   "homepage": "https://github.com/rocksteadyrose/bamazon-customer-view#readme",
   "dependencies": {
+    "ascii-art": "^1.4.3",
+    "chalk": "^2.4.1",
     "cli-table": "^0.3.1",
+    "figlet": "^1.2.0",
     "inquirer": "^5.2.0",
     "mysql": "^2.15.0"
   }
