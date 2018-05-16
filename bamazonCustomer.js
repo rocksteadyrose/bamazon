@@ -4,6 +4,8 @@ var Table = require('cli-table');
 var chalk = require('chalk');
 var figlet = require('figlet');
 
+var bypass = true;
+
 var connection = mysql.createConnection({
     host: "localhost",
     port: 3306,
@@ -26,23 +28,24 @@ figlet('BAMAZON!', function (err, data) {
 connection.connect(function (err) {
     if (err) throw err;
     // console.log("connected as id " + connection.threadId);
-    showList();
+    showTable();
 });
 
-function showList() {
+function showTable() {
     connection.query("SELECT * FROM products", function (err, response) {
 
         var table = new Table({
-            head: ['ID', 'Product', 'Price'],
-            colWidths: [5, 50, 10]
+            head: ['ID', 'Product', 'Price', 'Product Sales'],
+            colWidths: [5, 50, 10, 20]
         });
 
         for (var i = 0; i < response.length; i++) {
-            table.push([response[i].item_id, response[i].product_name, response[i].price])
+            table.push([response[i].item_id, response[i].product_name, response[i].price, response[i].product_sales])
         }
         console.log(table.toString());
-
+    if (bypass === true) {
         updateItems();
+    }
 
     })
 }
@@ -97,31 +100,31 @@ function updateItems() {
                     var totalCost = answer.stock * chosenItem.price;
                     var itemName = chosenItem.product_name;
 
-
                     var query = connection.query(
                         "UPDATE products SET ? WHERE ?",
                         [
                             {
-                                stock_quantity: stockUpdate
+                                stock_quantity: stockUpdate,
+                                product_sales: totalCost
+
                             },
                             {
                                 item_id: answer.choice
                             }
                         ],
+                        
                         function (error) {
                             if (error) throw err;
                             console.log(chalk.green("Purchased successfully! Your order total for " + itemName + " is " + "$" + totalCost));
+                            bypass = false;
                             successfulPurchase();
                         }
                     );
-
                 }
                 else {
                     console.log(chalk.red("Insufficient quantity!"));
                     unsuccessfulPurchase();
                 }
-
-
             })
         })
         }
@@ -130,24 +133,28 @@ function updateItems() {
 }
 
 function successfulPurchase() {
-    inquirer.prompt([
-        {
-            name: "confirm",
-            type: "confirm",
-            message: "Would you like to make another purchase?"
-        }
-    ])
-        .then(function (answer) {
-            switch (answer.confirm) {
-                case true:
-                    showList();
-                    break;
-                case false:
-                    console.log(chalk.blue("See you later!"))
-                    process.exit();
-                    break;
+    
+   showTable();
+    
+        inquirer.prompt([
+            {
+                name: "confirm",
+                type: "confirm",
+                message: "Would you like to make another purchase?"
             }
-        })
+        ])
+            .then(function (answer) {
+                switch (answer.confirm) {
+                    case true:
+                        bypass = true;
+                        showTable();
+                        break;
+                    case false:
+                        console.log(chalk.blue("See you later!"))
+                        process.exit();
+                        break;
+                }
+            })
 }
 
 function unsuccessfulPurchase() {
@@ -165,7 +172,7 @@ function unsuccessfulPurchase() {
         .then(function (answer) {
             switch (answer.list) {
                 case "Purchase a different item or less of this item":
-                    showList();
+                    showTable();
                     break;
 
                 case "Come back later":
