@@ -21,7 +21,7 @@ connection.connect(function (err) {
 });
 
 
-figlet('BAMAZON!', function(err, data) {
+figlet('BAMAZON!', function (err, data) {
     if (err) {
         console.log('Something went wrong...');
         console.dir(err);
@@ -51,69 +51,67 @@ function showList() {
 
 function updateItems() {
 
-    connection.query("SELECT * FROM products", function (err, response) {
-
-        if (err) throw err;
-        inquirer
-            .prompt([
-                {
-                    name: "choice",
-                    type: "input",
-                    message: "What is the ID of the item you'd like to purchase?"
-                },
-                {
-                    name: "stock",
-                    type: "input",
-                    message: "How many units would you like to purchase?"
+    inquirer
+        .prompt([
+            {
+                name: "choice",
+                type: "input",
+                message: "What is the ID of the item you'd like to purchase?"
+            },
+            {
+                name: "stock",
+                type: "input",
+                message: "How many units would you like to purchase?"
+            }
+        ])
+        .then(function (answer) {
+            var chosenItem;
+            connection.query("SELECT * FROM products WHERE item_id=?", answer.choice, function (err, response) {
+                for (var i = 0; i < response.length; i++) {
+                    if (Number(response[i].item_id) === Number(answer.choice)) {
+                        chosenItem = response[i];
+                    }
                 }
-            ])
-            .then(function (answer) {
-                var chosenItem;
-                connection.query("SELECT * FROM products WHERE item_id=?", answer.choice, function (err, response) {
-                    for (var i = 0; i < response.length; i++) {
-                        if (Number(response[i].item_id) === Number(answer.choice)) {
-                            chosenItem = response[i];
-                        }
-                    }
 
-                    if (answer.choice > 10) {
-                        console.log(chalk.red("Item doesn't exist! Please pick another!"))
-                        showList();
-                    }
+                if (answer.choice > 10) {
+                    console.log(chalk.red("Item doesn't exist! Please pick another!"))
+                    showList();
+                }
 
-                    else if (answer.stock < chosenItem.stock_quantity) {
-                        var stockUpdate = chosenItem.stock_quantity - answer.stock;
-                        var totalCost = answer.stock * chosenItem.price;
-                        var itemName = chosenItem.product_name;
-                        var query = connection.query(
-                            "UPDATE products SET ? WHERE ?",
-                            [
-                                {
-                                    stock_quantity: stockUpdate
-                                },
-                                {
-                                    item_id: answer.choice
-                                }
-                            ],
-                            function (error) {
-                                if (error) throw err;
-                                console.log(chalk.green("Purchased successfully! Your order total for " + itemName + " is " + "$" + totalCost));
-                                successfulPurchase();
+                if (answer.stock < chosenItem.stock_quantity) {
+                    var stockUpdate = chosenItem.stock_quantity - answer.stock;
+                    var totalCost = answer.stock * chosenItem.price;
+                    var itemName = chosenItem.product_name;
+
+
+                    var query = connection.query(
+                        "UPDATE products SET ? WHERE ?",
+                        [
+                            {
+                                stock_quantity: stockUpdate
+                            },
+                            {
+                                item_id: answer.choice
                             }
-                        );
+                        ],
+                        function (error) {
+                            if (error) throw err;
+                            console.log(chalk.green("Purchased successfully! Your order total for " + itemName + " is " + "$" + totalCost));
+                            successfulPurchase();
+                        }
+                    );
 
-                    }
-                    else {
-                        console.log(chalk.red("Insufficient quantity!"));
-                        unsuccessfulPurchase();
-                    }
+                }
+                else {
+                    console.log(chalk.red("Insufficient quantity!"));
+                    unsuccessfulPurchase();
                 }
 
-                )
 
             })
+        }
 
-    })
+        )
 }
 
 function successfulPurchase() {
