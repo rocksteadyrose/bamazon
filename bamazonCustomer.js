@@ -14,13 +14,6 @@ var connection = mysql.createConnection({
     database: "bamazon"
 });
 
-connection.connect(function (err) {
-    if (err) throw err;
-    // console.log("connected as id " + connection.threadId);
-    showList();
-});
-
-
 figlet('BAMAZON!', function (err, data) {
     if (err) {
         console.log('Something went wrong...');
@@ -30,6 +23,11 @@ figlet('BAMAZON!', function (err, data) {
     console.log(data)
 });
 
+connection.connect(function (err) {
+    if (err) throw err;
+    // console.log("connected as id " + connection.threadId);
+    showList();
+});
 
 function showList() {
     connection.query("SELECT * FROM products", function (err, response) {
