@@ -48,19 +48,40 @@ function showList() {
 }
 
 function updateItems() {
-
+    connection.query("SELECT * FROM products", function (err, response) { 
     inquirer
         .prompt([
             {
                 name: "choice",
                 type: "input",
-                message: "What is the ID of the item you'd like to purchase?"
+                message: "What is the ID of the item you'd like to purchase?",
+                validate: function(input) {
+                    var IDarray = []
+                    for (var i = 0; i < response.length; i++) {
+                        var IDs = response[i].item_id;
+                        IDarray.push(IDs)
+                    }
+                    if (IDarray.indexOf(Number(input)) > -1) {
+                      return true;
+                    }
+                    console.log(chalk.red("\n" + "Item doesn't exist! Please pick another!"))
+                    return false;
+                }
             },
             {
                 name: "stock",
                 type: "input",
-                message: "How many units would you like to purchase?"
+                message: "How many units would you like to purchase?",
+                validate: function(value) {
+                    if (isNaN(value) === false && value > 0) {
+                      return true;
+                    }
+                    else {
+                    console.log(chalk.red("\n" + "Please enter a valid number."))
+                    return false;
+                    }
             }
+        }
         ])
         .then(function (answer) {
             var chosenItem;
@@ -71,12 +92,7 @@ function updateItems() {
                     }
                 }
 
-                if (answer.choice > 10) {
-                    console.log(chalk.red("Item doesn't exist! Please pick another!"))
-                    showList();
-                }
-
-                if (answer.stock < chosenItem.stock_quantity) {
+                if (answer.stock <= chosenItem.stock_quantity) {
                     var stockUpdate = chosenItem.stock_quantity - answer.stock;
                     var totalCost = answer.stock * chosenItem.price;
                     var itemName = chosenItem.product_name;
@@ -107,6 +123,7 @@ function updateItems() {
 
 
             })
+        })
         }
 
         )
