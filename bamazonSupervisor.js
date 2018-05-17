@@ -54,7 +54,6 @@ function viewProductSales() {
 
     var query = "select departments.department_id, departments.department_name, departments.over_head_costs, IFNULL(sum(products.product_sales), 0) as product_sales, IFNULL((SUM(products.product_sales) - departments.over_head_costs), 0) as total_profit FROM products RIGHT OUTER JOIN departments on products.department_name = departments.department_name GROUP BY departments.department_id;";
 
-
     connection.query(query, function (err, response) {
         var table = new Table({
             head: ['Department ID', 'Department Name', 'Overhead Costs', 'Product Sales', 'Total Profit'],
@@ -87,10 +86,19 @@ function newDepartment() {
                     type: "input",
                     message: "What is the name of the department you'd like to add?",
                     validate: function (input) {
+
                         if (input === "" || input === " ") {
                             console.log(chalk.red("\n" + "Please enter a valid ID."))
                             return false;
                         }
+
+                        for (var i = 0; i < response.length; i++) {
+                            var dept = response[i].department_name;
+                        if (dept.indexOf(input) > -1) {
+                            console.log(chalk.red("\n" + "Department name already exists!"))
+                            return false;
+                        }
+                    }
                         return true;
                     }
                 },
