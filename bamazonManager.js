@@ -270,6 +270,7 @@ function addProduct() {
                 function (err) {
                     if (err) throw err;
                     console.log(chalk.green("Your product was added to the store successfully!"));
+                    bypass = true;
                     viewProducts();
                 }
             )
