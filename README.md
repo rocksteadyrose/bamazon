@@ -1,9 +1,5 @@
 # Bamazon!
-<<<<<<< HEAD
-VIDEO EXAMPLE: https://drive.google.com/open?id=1jdCjvusKm5mWMSvbDDHvFRKsk26cRO27
-=======
 DEMO VIDEO: https://drive.google.com/open?id=1jdCjvusKm5mWMSvbDDHvFRKsk26cRO27
->>>>>>> 70aed5ca519fb9bbe895441c727c70b299f4ab67
 
 Bamazon is an Amazon-like storefront that uses MySQL, Node.js, packages like NPM Inquirer.js, and JavaScript to take in orders from customers and deplete stock from the store's inventory. Bamazon also has a Manager and Supervisor view that allows additional functionality - including adding new items, viewing low inventory, viewing product sales, and more.
 
@@ -12,25 +8,21 @@ Node.js, MySQL, Javascript
 
 # How it works:
 
-<<<<<<< HEAD
 1) Clone repo
 
 2) Create database and tables in MySQL using SQL file
 
 3) Install depedencies from package.json file
-=======
 * Clone repo
 
 * Create database and tables in MySQL using SQL file
 
 * Install depedencies from package.json file
->>>>>>> 70aed5ca519fb9bbe895441c727c70b299f4ab67
 
 There are three views/apps to choose from:
 
 # Customer App:
 Enter "node bamazonCustomer" into the command line
-<<<<<<< HEAD
 Act as a customor and:
 *Place a new order using the item's ID, and then input the amount of units
 *Once you have placed the order, the app will check if the store has enough of the product to meet your request.
@@ -48,7 +40,6 @@ Enter "node bamazonSupervisor" into the command line
 Act as a supervisor and:
 *View product sales by dpartment
 *Create a new department
-=======
 * Act as a customor and:
 * Place a new order using the item's ID, and then input the amount of units
 * Once you have placed the order, the app will check if the store has enough of the product to meet your request.
@@ -66,4 +57,3 @@ Enter "node bamazonSupervisor" into the command line
 * Act as a supervisor and:
 * View product sales by department
 * Create a new department
->>>>>>> 70aed5ca519fb9bbe895441c727c70b299f4ab67
