@@ -15,15 +15,6 @@ var connection = mysql.createConnection({
     database: "bamazon"
 });
 
-// figlet('BAMAZON!', function (err, data) {
-//     if (err) {
-//         console.log('Something went wrong...');
-//         console.dir(err);
-//         return;
-//     }
-//     console.log(data)
-// });
-
 connection.connect(function (err) {
     if (err) throw err;
     // console.log("connected as id " + connection.threadId);
@@ -35,7 +26,7 @@ function showList() {
         .prompt({
             name: "menu",
             type: "rawlist",
-            message: "What would you like to do?",
+            message: "Welcome to Bamazon Manager! What would you like to do?",
             choices: ["View Products for Sale", "View Low Inventory", "Add to Inventory", "Add New Product"]
         })
         .then(function (answer) {
@@ -204,6 +195,9 @@ function addToInventory() {
 }
 
 function addProduct() {
+    bypass = false;
+    viewProducts();
+    connection.query("SELECT * FROM departments", function (err, response) {
     inquirer
         .prompt([
             {
@@ -222,11 +216,17 @@ function addProduct() {
                 type: "input",
                 message: "In which department should the product go?",
                 validate: function (value) {
-                    if (value === "" || value === " ") {
-                        console.log(chalk.red("\n" + "Please enter a valid department name."));
+                        var deptArray = [];
+                    for (var i = 0; i < response.length; i++) {
+                        var dept = response[i].department_name;
+                        deptArray.push(dept);
+                    }
+                    if (deptArray.indexOf(value) === -1) {
+                        console.log(chalk.red("\n" + "Please enter an existing department."))
                         return false;
-                    } return true;
-                }
+                } 
+                    return true;
+            }
             },
             {
                 name: "price",
@@ -274,6 +274,7 @@ function addProduct() {
                 }
             )
         })
+    });
 }
 
 function lowStockResponse() {

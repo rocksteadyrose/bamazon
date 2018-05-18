@@ -15,15 +15,6 @@ var connection = mysql.createConnection({
     database: "bamazon"
 });
 
-// figlet('BAMAZON!', function (err, data) {
-//     if (err) {
-//         console.log('Something went wrong...');
-//         console.dir(err);
-//         return;
-//     }
-//     console.log(data)
-// });
-
 connection.connect(function (err) {
     if (err) throw err;
     // console.log("connected as id " + connection.threadId);
@@ -35,7 +26,7 @@ function showList() {
         .prompt({
             name: "menu",
             type: "rawlist",
-            message: "What would you like to do?",
+            message: "Welcome to Bamazon Supervisor! What would you like to do?",
             choices: ["View Product Sales by Department", "Create New Department"]
         })
         .then(function (answer) {
@@ -53,6 +44,7 @@ function showList() {
 function viewProductSales() {
 
     var query = "select departments.department_id, departments.department_name, departments.over_head_costs, IFNULL(sum(products.product_sales), 0) as product_sales, IFNULL((SUM(products.product_sales) - departments.over_head_costs), 0) as total_profit FROM products RIGHT OUTER JOIN departments on products.department_name = departments.department_name GROUP BY departments.department_id;";
+    //products.product_id to department.department_name
 
     connection.query(query, function (err, response) {
         var table = new Table({
