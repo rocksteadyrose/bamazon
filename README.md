@@ -8,11 +8,11 @@ Node.js, MySQL, Javascript
 
 # How it works:
 
-1) Clone repo
+* Clone repo
 
-2) Create database and tables in MySQL using SQL file
+* Create database and tables in MySQL using SQL file
 
-3) Install depedencies from package.json file
+* Install depedencies from package.json file
 
 There are three views/apps to choose from:
 
