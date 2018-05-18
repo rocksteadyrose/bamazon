@@ -18,20 +18,20 @@ There are three views/apps to choose from:
 
 # Customer App:
 Enter "node bamazonCustomer" into the command line
-Act as a customor and:
-*Place a new order using the item's ID, and then input the amount of units
-*Once you have placed the order, the app will check if the store has enough of the product to meet your request.
+* Act as a customor and:
+* Place a new order using the item's ID, and then input the amount of units
+* Once you have placed the order, the app will check if the store has enough of the product to meet your request.
 
 # Manager App:
 Enter "node bamazonManager" into the command line
-Act as a manager and:
-*View products for sale
-*View low inventory
-*Add to the inventory
-*Add a new product
+* Act as a manager and:
+* View products for sale
+* View low inventory
+* Add to the inventory
+* Add a new product
 
 # Supervisor App:
 Enter "node bamazonSupervisor" into the command line
 Act as a supervisor and:
-*View product sales by department
-*Create a new department
+* View product sales by department
+* Create a new department
