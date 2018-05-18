@@ -8,11 +8,6 @@ Node.js, MySQL, Javascript
 
 # How it works:
 
-1) Clone repo
-
-2) Create database and tables in MySQL using SQL file
-
-3) Install depedencies from package.json file
 * Clone repo
 
 * Create database and tables in MySQL using SQL file
