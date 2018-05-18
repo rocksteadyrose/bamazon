@@ -32,12 +32,12 @@ connection.connect(function (err) {
 function showTable(newPurchases) {
     connection.query("SELECT * FROM products", function (err, response) {
         var table = new Table({
-            head: ['ID', 'Product', 'Price', 'Product Sales'],
-            colWidths: [5, 50, 10, 20]
+            head: ['ID', 'Product', 'Price'],
+            colWidths: [5, 50, 10]
         });
 
         for (var i = 0; i < response.length; i++) {
-            table.push([response[i].item_id, response[i].product_name, response[i].price, response[i].product_sales])
+            table.push([response[i].item_id, response[i].product_name, response[i].price])
         }
         console.log(table.toString());
 
@@ -135,7 +135,7 @@ function updateItems() {
 
                             function (error) {
                                 if (error) throw err;
-                                console.log(chalk.green("\n" + "Purchased successfully! Your order total for " + itemName + " is " + "$" + purchasePrice));
+                                console.log(chalk.green("Purchased successfully! Your order total for " + itemName + " is " + "$" + purchasePrice + "!"));
                                 handlePurchase(inStock);
                             });
                     }
@@ -153,7 +153,6 @@ function handlePurchase(result) {
         type: "list",
         message: "What would you like to do?",
         choices: [
-            "View updated store", 
             "Make another purchase",
             "Come back later"
         ]
@@ -177,10 +176,6 @@ function handlePurchase(result) {
     ])
         .then(function (answer) {
             switch (answer.list) {
-                case "View updated store":
-                    var updateTable = true;
-                    showTable(updateTable);
-                    break;
                 case "Purchase a different item or less of this item":
                 case "Make another purchase":
                     showTable();
