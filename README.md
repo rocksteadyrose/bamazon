@@ -33,5 +33,5 @@ Act as a manager and:
 # Supervisor App:
 Enter "node bamazonSupervisor" into the command line
 Act as a supervisor and:
-*View product sales by dpartment
+*View product sales by department
 *Create a new department
