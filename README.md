@@ -1,5 +1,5 @@
 # Bamazon!
-DEMO VIDEO: https://drive.google.com/open?id=1jdCjvusKm5mWMSvbDDHvFRKsk26cRO27
+DEMO VIDEO: http://bit.ly/bamazonrose
 
 Bamazon is an Amazon-like storefront that uses MySQL, Node.js, packages like NPM Inquirer.js, and JavaScript to take in orders from customers and deplete stock from the store's inventory. Bamazon also has a Manager and Supervisor view that allows additional functionality - including adding new items, viewing low inventory, viewing product sales, and more.
 
